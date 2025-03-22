@@ -193,7 +193,7 @@ class RClip:
 
     # Convert to SearchResult objects
     return [
-        RClip.SearchResult(filepath=filepaths[th[0]], score=th[1]) 
+        RClip.SearchResult(filepath=th[0], score=th[1]) 
         for th in top_k_similarities
     ]
 
