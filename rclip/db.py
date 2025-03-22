@@ -117,7 +117,7 @@ class DB:
 
   def get_image_vectors_by_dir_path(self, image_vector, path: str) -> sqlite3.Cursor:
       query = """
-          SELECT filepath, distance_cosine_f32(vt.vector, ?) AS distance 
+          SELECT filepath, distance_cosine_f32(vector, ?) AS distance 
           FROM images 
           WHERE filepath LIKE ? 
           AND deleted IS NULL
