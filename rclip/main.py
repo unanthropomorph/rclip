@@ -4,6 +4,7 @@ import re
 import sys
 import threading
 from typing import Iterable, List, NamedTuple, Optional, Tuple, TypedDict, cast
+import orjson
 
 import numpy as np
 from tqdm import tqdm
@@ -87,7 +88,7 @@ class RClip:
       return
     for path, meta, vector in cast(Iterable[PathMetaVector], zip(filtered_paths, metas, features)):
       self._db.upsert_image(
-        db.NewImage(filepath=path, modified_at=meta["modified_at"], size=meta["size"], vector=vector.tobytes()),
+        db.NewImage(filepath=path, modified_at=meta["modified_at"], size=meta["size"], vector=orjson.dumps(vector, option=orjson.OPT_SERIALIZE_NUMPY).decode('UTF-8')),
         commit=False,
       )
 

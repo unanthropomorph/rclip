@@ -40,7 +40,7 @@ class DB:
         filepath TEXT NOT NULL UNIQUE,
         modified_at DATETIME NOT NULL,
         size INTEGER NOT NULL,
-        vector BLOB NOT NULL
+        vector JSON NOT NULL
       )
     """)
     # Query for images
