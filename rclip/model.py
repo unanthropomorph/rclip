@@ -208,4 +208,4 @@ class Model:
 
 
 
-    return orjson.dumps(features, option=orjson.OPT_SERIALIZE_NUMPY).decode('UTF-8'))
+    return orjson.dumps(features, option=orjson.OPT_SERIALIZE_NUMPY).decode('UTF-8')
