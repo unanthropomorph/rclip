@@ -189,7 +189,7 @@ class RClip:
     similarities = list(zip(filepaths, sorted_similarities))
     
     # Get top k results
-    top_k_similarities = filtered_similarities[:top_k]
+    top_k_similarities = similarities[:top_k]
 
     # Convert to SearchResult objects
     return [
