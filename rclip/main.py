@@ -186,7 +186,7 @@ class RClip:
 
     filepaths, sorted_similarities = self._get_vector_similarities(query_vector, directory)
 
-    print(list(zip(filepaths, sorted_similarities)):5)
+    print(list(zip(filepaths, sorted_similarities))[:5])
 
     # exclude images that were part of the query from the results
     exclude_files = [
