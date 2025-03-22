@@ -1,6 +1,7 @@
 import os.path
 import pathlib
 import sqlite3
+import usearch
 from typing import Any, Optional, TypedDict, Union
 
 
@@ -25,6 +26,8 @@ class DB:
   def __init__(self, filename: Union[str, pathlib.Path]):
     self._con = sqlite3.connect(filename)
     self._con.row_factory = sqlite3.Row
+    self._con.enable_load_extension(True)
+    self._con.load_extension(usearch.sqlite_path())
     self.ensure_tables()
     self.ensure_version()
 
@@ -112,7 +115,12 @@ class DB:
     cur = self._con.execute(f"SELECT * FROM images WHERE {query} LIMIT 1", kwargs)
     return cur.fetchone()
 
-  def get_image_vectors_by_dir_path(self, path: str) -> sqlite3.Cursor:
-    return self._con.execute(
-      "SELECT filepath, vector FROM images WHERE filepath LIKE ? AND deleted IS NULL", (path + f"{os.path.sep}%",)
-    )
+  def get_image_vectors_by_dir_path(self, image_vector, path: str) -> sqlite3.Cursor:
+      query = """
+          SELECT filepath, distance_cosine_f32(vt.vector, ?) AS distance 
+          FROM images 
+          WHERE filepath LIKE ? 
+          AND deleted IS NULL
+      """
+      params = (image_vector, f"{path}{os.path.sep}%")
+      return self._con.execute(query, params)

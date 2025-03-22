@@ -1,7 +1,7 @@
 import re
 from typing import List, Tuple, Optional, cast
 import sys
-
+import orjson
 import numpy as np
 import numpy.typing as npt
 from PIL import Image, UnidentifiedImageError
@@ -198,15 +198,14 @@ class Model:
     else:
       return np.zeros(self.get_vector_size(), dtype=np.float32)
 
-  def compute_similarities_to_text(
-    self, item_features: FeatureVector, positive_queries: List[str], negative_queries: List[str]
+  def compute_query_feature_vector(
+    self, positive_queries: List[str], negative_queries: List[str]
   ) -> List[Tuple[float, int]]:
     positive_features = self.compute_features_for_queries(positive_queries)
     negative_features = self.compute_features_for_queries(negative_queries)
 
     features = positive_features - negative_features
 
-    similarities = features @ item_features.T
-    sorted_similarities = sorted(zip(similarities, range(item_features.shape[0])), key=lambda x: x[0], reverse=True)
 
-    return sorted_similarities
+
+    return orjson.dumps(features, option=orjson.OPT_SERIALIZE_NUMPY).decode('UTF-8'))

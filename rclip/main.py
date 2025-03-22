@@ -180,10 +180,13 @@ class RClip:
     positive_queries: List[str] = [],
     negative_queries: List[str] = [],
   ) -> List[SearchResult]:
-    filepaths, features = self._get_features(directory)
-
+    
     positive_queries = [query] + positive_queries
-    sorted_similarities = self._model.compute_similarities_to_text(features, positive_queries, negative_queries)
+    query_vector = self._model.compute_query_feature_vector(positive_queries, negative_queries)
+
+    filepaths, sorted_similarities = self._get_vector_similarities(query_vector, directory)
+
+    print(zip(filepaths[:5], sorted_similarities[:5]))
 
     # exclude images that were part of the query from the results
     exclude_files = [
@@ -200,15 +203,13 @@ class RClip:
 
     return [RClip.SearchResult(filepath=filepaths[th[1]], score=th[0]) for th in top_k_similarities]
 
-  def _get_features(self, directory: str) -> Tuple[List[str], model.FeatureVector]:
+  def _get_vector_similarities(self, query_vector, directory: str) -> Tuple[List[str], List[float]]:
     filepaths: List[str] = []
-    features: List[model.FeatureVector] = []
-    for image in self._db.get_image_vectors_by_dir_path(directory):
+    similarities: List[float] = []
+    for image in self._db.get_image_vectors_by_dir_path(query_vector, directory):
       filepaths.append(image["filepath"])
       features.append(np.frombuffer(image["vector"], np.float32))
-    if not filepaths:
-      return [], np.ndarray(shape=(0, self._model.get_vector_size()))
-    return filepaths, np.stack(features)
+    return filepaths, similarities
 
 
 def init_rclip(
