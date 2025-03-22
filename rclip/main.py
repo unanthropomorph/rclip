@@ -208,7 +208,7 @@ class RClip:
     similarities: List[float] = []
     for image in self._db.get_image_vectors_by_dir_path(query_vector, directory):
       filepaths.append(image["filepath"])
-      features.append(np.frombuffer(image["vector"], np.float32))
+      similarities.append(image["distance"])
     return filepaths, similarities
 
 
