@@ -121,6 +121,7 @@ class DB:
           FROM images 
           WHERE filepath LIKE ? 
           AND deleted IS NULL
+          ORDER BY distance ASC
       """
       params = (image_vector, f"{path}{os.path.sep}%")
       return self._con.execute(query, params)
