@@ -186,27 +186,14 @@ class RClip:
 
     filepaths, sorted_similarities = self._get_vector_similarities(query_vector, directory)
 
-    # Exclude images that were part of the query from the results
-    exclude_files = {
-        os.path.abspath(query) 
-        for query in positive_queries + negative_queries 
-        if helpers.is_file_path(query)
-    }
-
-    # Filter similarities based on exclusion criteria
-    filtered_similarities = [
-        similarity 
-        for similarity in sorted_similarities
-        if (not self._exclude_dir_regex.match(filepaths[similarity[1]]) 
-            and filepaths[similarity[1]] not in exclude_files)
-    ]
+    similarities = list(zip(filepaths, sorted_similarities))
     
     # Get top k results
     top_k_similarities = filtered_similarities[:top_k]
 
     # Convert to SearchResult objects
     return [
-        RClip.SearchResult(filepath=filepaths[th[1]], score=th[0]) 
+        RClip.SearchResult(filepath=filepaths[th[0]], score=th[1]) 
         for th in top_k_similarities
     ]
 
