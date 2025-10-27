@@ -151,6 +151,15 @@ def init_arg_parser() -> argparse.ArgumentParser:
     default=400,
     help="preview height in pixels; default: 400",
   )
+
+  parser.add_argument(
+    "--model",
+    "-M",
+    type=str,
+    default="openai:ViT-B-32-quickgelu",
+    help="OpenCLIP model",
+  )
+
   parser.add_argument(
     "--no-indexing",
     "--skip-index",

@@ -13,12 +13,7 @@ QUERY_WITH_MULTIPLIER_RE = re.compile(r"^(?P<multiplier>(\d+(\.\d+)?|\.\d+|\d+\.
 QueryWithMultiplier = Tuple[float, str]
 FeatureVector = npt.NDArray[np.float32]
 
-TEXT_ONLY_SUPPORTED_MODELS = [
-  {
-    "model_name": "ViT-B-32-quickgelu",
-    "checkpoint_name": "openai",
-  }
-]
+
 
 
 def get_open_clip_version():
@@ -26,13 +21,12 @@ def get_open_clip_version():
 
 
 class Model:
-  VECTOR_SIZE = 512
-  _model_name = "ViT-B-32-quickgelu"
-  _checkpoint_name = "openai"
 
-  def __init__(self, device: str = "cpu"):
+
+  def __init__(self, device: str = "cpu", model: str = ""):
     self._device = device
-
+    self._model_name = model.split(":")[0]
+    self._checkpoint_name = model.split(":")[1]
     self._model_var = None
     self._model_text_var = None
     self._preprocess_var = None
@@ -57,10 +51,8 @@ class Model:
     )
     self._model_text_var = None
 
-    if {
-      "model_name": self._model_name,
-      "checkpoint_name": self._checkpoint_name,
-    } in TEXT_ONLY_SUPPORTED_MODELS and self._should_update_text_model():
+
+    if self._should_update_text_model():
       import torch
 
       model_text = self._get_text_model(cast(open_clip.CLIP, self._model_var))
@@ -168,6 +160,9 @@ class Model:
         phrase_queries.append((multiplier, query))
     return phrase_queries, local_file_queries, url_queries
 
+  def get_vector_size(self) -> int:
+    return int(_model_var.ln_final.weight.shape[0])
+
   def compute_features_for_queries(self, queries: List[str]) -> FeatureVector:
     text_features: Optional[FeatureVector] = None
     image_features: Optional[FeatureVector] = None
@@ -204,7 +199,7 @@ class Model:
     elif image_features is not None:
       return image_features
     else:
-      return np.zeros(Model.VECTOR_SIZE, dtype=np.float32)
+      return np.zeros(self.get_vector_size(), dtype=np.float32)
 
   def compute_similarities_to_text(
     self, item_features: FeatureVector, positive_queries: List[str], negative_queries: List[str]
