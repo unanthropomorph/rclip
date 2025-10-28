@@ -153,7 +153,7 @@ def init_arg_parser() -> argparse.ArgumentParser:
   )
 
   parser.add_argument(
-    "--model",
+    "--model_path",
     "-M",
     type=str,
     default="openai:ViT-B-32-quickgelu",
