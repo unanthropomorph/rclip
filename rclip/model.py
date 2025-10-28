@@ -161,7 +161,7 @@ class Model:
     return phrase_queries, local_file_queries, url_queries
 
   def get_vector_size(self) -> int:
-    return int(self._model.ln_final.weight.shape[0])
+    return open_clip.factory.get_model_config(self._model_name)["embed_dim"]
 
   def compute_features_for_queries(self, queries: List[str]) -> FeatureVector:
     text_features: Optional[FeatureVector] = None
