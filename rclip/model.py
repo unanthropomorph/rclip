@@ -23,10 +23,10 @@ def get_open_clip_version():
 class Model:
 
 
-  def __init__(self, device: str = "cpu", model_path: str = ""):
+  def __init__(self, device: str = "cpu", model_ckpt: str = ""):
     self._device = device
-    self._model_name = model_path.split(":")[0]
-    self._checkpoint_name = model_path.split(":")[1]
+    self._model_name = model_ckpt.split(":")[0]
+    self._checkpoint_name = model_ckpt.split(":")[1]
     self._model_var = None
     self._model_text_var = None
     self._preprocess_var = None

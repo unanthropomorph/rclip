@@ -153,10 +153,10 @@ def init_arg_parser() -> argparse.ArgumentParser:
   )
 
   parser.add_argument(
-    "--model_path",
+    "--model_ckpt",
     "-M",
     type=str,
-    default="openai:ViT-B-32-quickgelu",
+    default="ViT-B-32-quickgelu:openai",
     help="OpenCLIP model",
   )
 

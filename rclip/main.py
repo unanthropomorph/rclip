@@ -214,7 +214,7 @@ class RClip:
 
 def init_rclip(
   working_directory: str,
-  model_path: str,
+  model_ckpt: str,
   indexing_batch_size: int,
   device: str = "cpu",
   exclude_dir: Optional[List[str]] = None,
@@ -225,7 +225,7 @@ def init_rclip(
   db_path = datadir / "db.sqlite3"
 
   database = db.DB(db_path)
-  model_instance = model.Model(device=device or "cpu", model_path=model_path)
+  model_instance = model.Model(device=device or "cpu", model_ckpt=model_ckpt)
   rclip = RClip(
     model_instance=model_instance,
     database=database,
@@ -275,7 +275,7 @@ def main():
 
   rclip, _, db = init_rclip(
     current_directory,
-    args.model_path,
+    args.model_ckpt,
     args.indexing_batch_size,
     vars(args).get("device", "cpu"),
     args.exclude_dir,
