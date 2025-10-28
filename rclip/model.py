@@ -161,7 +161,7 @@ class Model:
     return phrase_queries, local_file_queries, url_queries
 
   def get_vector_size(self) -> int:
-    return int(_model_var.ln_final.weight.shape[0])
+    return int(self._model.ln_final.weight.shape[0])
 
   def compute_features_for_queries(self, queries: List[str]) -> FeatureVector:
     text_features: Optional[FeatureVector] = None
